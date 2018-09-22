@@ -20,8 +20,6 @@ args = parser.parse_args()
 
 qp = re.compile(r'^q$|^quit$', re.I)
 dtp = re.compile(r'/2018 [0-9:]+ [AP]M$')
-cpup = re.compile(r'^avg-cpu:')
-sdap = re.compile(r'^sda\s+')
 
 def getdt():
         dttm = datetime.datetime.now()
@@ -44,17 +42,18 @@ else:
 DT = getdt()
 wfile = "iostat_" + DT + ".csv"
 fstline = "Date, Time, %User CPU, %System CPU, %IOWait, %CPU Idle, R/sec, W/sec, Avg-Q, Avg-W, SvcTm, %Util"
+jo = ",\t"
 iowf = open(wfile, 'w')
 iowf.write(fstline + "\n")
 with open(IOFILE, 'r') as iorf:
         for line in iorf:
                 if dtp.search(line):
                         dtary = line.split()
-                        iowf.write(dtary[0] + ", " + dtary[1] + " " + dtary[2] + ",\t")
-                if cpup.search(line):
+                        iowf.write(dtary[0] + ", " + dtary[1] + " " + dtary[2] + jo)
+                if line.startswith("avg-cpu:"):
                         cpuary = next(iorf).split()     ### Get the next line after avg-cpu and split it to get a list
-                        iowf.write(cpuary[0] + ",\t" + cpuary[2] + ",\t" + cpuary[3] + ",\t" + cpuary[5] + ",\t")
-                if sdap.search(line):
+                        iowf.write(cpuary[0] + jo + cpuary[2] + jo + cpuary[3] + jo + cpuary[5] + jo)
+                if line.startswith("sda"):
                         dskary = line.split()
-                        iowf.write(dskary[3] + ",\t" + dskary[4] + ",\t" + dskary[8] + ",\t" + dskary[9] + ",\t" + dskary[12] + ",\t" + dskary[13] + "\n")
+                        iowf.write(dskary[3] + jo + dskary[4] + jo + dskary[8] + jo + dskary[9] + jo + dskary[12] + jo + dskary[13] + "\n")
 iowf.close
