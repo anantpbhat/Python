@@ -10,9 +10,8 @@
 ## Version 1.0 - Initial creation, Anant, 08/24/2018                    #
 #########################################################################
 
-import argparse
-import re
-import datetime
+import argparse, re
+from datetime import datetime
 
 parser = argparse.ArgumentParser(description="Parse IOSTAT Data with provided input file.")
 parser.add_argument("-i", "--infile", metavar="", help="Specify IOSTAT Data file path")
@@ -23,8 +22,9 @@ dtp = re.compile(r'/2018 [0-9:]+ [AP]M$')
 
 def getdt():
         dttm = datetime.datetime.now()
-        dt = (str(dttm.year) +  str(dttm.month) + str(dttm.day))
-        return dt
+        dt = (str(dttm.year) + "-" + str(dttm.month) + "-" + str(dttm.day))
+        tm = (str(dttm.hour) + ":" + str(dttm.min) + ":" + str(dttm.second))
+        return (dt, tm)
 
 def getinput():
         IN1 = input("Enter IOSTAT Data file path or (q|Q) to quit: ")
@@ -39,7 +39,7 @@ if args.infile:
 else:
         IOFILE = getinput()
 
-DT = getdt()
+(DT, TM) = getdt()
 wfile = "iostat_" + DT + ".csv"
 fstline = "Date, Time, %User CPU, %System CPU, %IOWait, %CPU Idle, R/sec, W/sec, Avg-Q, Avg-W, SvcTm, %Util"
 jo = ",\t"

@@ -26,8 +26,10 @@ if args.infile:
 else:
     INFILE = input("Type in a Filename to scan or (q|Q) to quit: ")
     quitout(INFILE, 1)
+
 count_lines_words(INFILE, 1)
 print("")
+
 while True:
     sword = input("Type in a word to scan in this input file or (q|Q) to quit: ")
     quitout(sword, 0)
