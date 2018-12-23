@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/python3.5
+#!/usr/bin/env python3.6
 
 #########################################################################
 ##                                                                      #
@@ -21,7 +21,7 @@ qp = re.compile(r'^q$|^quit$', re.I)
 dtp = re.compile(r'/2018 [0-9:]+ [AP]M$')
 
 def getdt():
-        dttm = datetime.datetime.now()
+        dttm = datetime.now()
         dt = (str(dttm.year) + "-" + str(dttm.month) + "-" + str(dttm.day))
         tm = (str(dttm.hour) + ":" + str(dttm.min) + ":" + str(dttm.second))
         return (dt, tm)
