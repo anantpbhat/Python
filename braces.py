@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.6
 
-import re
-import argparse
+import re, argparse
 
 parser = argparse.ArgumentParser(description="Script to check braces in a code.")
 parser.add_argument("-i", "--usrin", metavar="", help="Provide input with braces, brackets or parentheses")
