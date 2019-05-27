@@ -15,12 +15,12 @@ import requests, argparse, os
 
 class Base():
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description="Parse RHEV RESTAPI Output.")
-        self.parser.add_argument("--file", required="true", help="HTML Filename is required.")
-        self.parser.add_argument("--name", action="store_true", help="Displays Hostname.")
-        self.parser.add_argument("--cpu", action="store_true", help="Displays Host CPU details.")
-        self.parser.add_argument("--ip", action="store_true", help="Displays Host IP.")
-        self.args = self.parser.parse_args()
+        parser = argparse.ArgumentParser(description="Parse RHEV RESTAPI Output.")
+        parser.add_argument("--file", required="true", help="HTML Filename is required.")
+        parser.add_argument("--name", action="store_true", help="Displays Hostname.")
+        parser.add_argument("--cpu", action="store_true", help="Displays Host CPU details.")
+        parser.add_argument("--ip", action="store_true", help="Displays Host IP.")
+        self.args = parser.parse_args()
 
     def quitout(self):                                      ### Generic Quit method
         exit(code=1)
