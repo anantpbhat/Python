@@ -10,11 +10,20 @@ class MEMSTAT:
         parser = argparse.ArgumentParser(description="Display Memstats with timestamps. Interval & Count args required")
         parser.add_argument("-i", "--interval", required=True, metavar="", help="Interval is required, specify in secs")
         parser.add_argument("-c", "--count", required=True, metavar="", help="Count is required, specify a number")
+        parser.add_argument("-o", "--output", metavar="", help="Specify a filename prefix to output. Optional")
         self.args = parser.parse_args()
 
     def getdatetime(self):
         DT = str(datetime.now()).split(".")
-        return DT[0]
+        dttm = DT[0].split()
+        return (dttm[0], dttm[1])
+
+    def getfilename(self):
+        (arg1, arg2) = self.getdatetime()
+        if self.args.output == "stdout" or not self.args.output:
+            return "stdout"
+        else:
+            return str("Out/%s_%s_%s" % (self.args.output, arg1, arg2))
 
     def getmemstat(self):
         memstatout = []
@@ -43,14 +52,26 @@ class MEMSTAT:
             memstatout.append(memproc.pid)
         return memstatout
 
+    def writeout(self, arg1, arg2, lst1, file1):
+        SET1 = str("DATE: %s %s" % (arg1, arg2)) + "\t" + str("PID: %d" % lst1[3])
+        SET2 = str("%s" % lst1[0]) + "\n" + str("%s" % lst1[1]) + "\n" + str("%s" % lst1[2]) + "\n"
+        if file1 == "stdout":
+            print(SET1)
+            print(SET2)
+        else:
+            with open(file1, 'a') as f:
+                f.write(SET1 + "\n")
+                f.write(SET2 + "\n")
+        return
+
     def main(self):
         intvl = int(self.args.interval)
         cnt = int(self.args.count)
+        outfile = self.getfilename()
         while cnt > 0:
-            DATE = self.getdatetime()
+            (dt, tm) = self.getdatetime()
             memstat = self.getmemstat()
-            print("DATE: %s" % DATE, "\t", "PID: %d" % memstat[3])
-            print("%s" % memstat[0], "\n", "%s" % memstat[1], "\n", "%s" % memstat[2], "\n")
+            self.writeout(dt, tm, memstat, outfile)
             cnt -= 1
             if cnt != 0:
                 sleep(intvl)
