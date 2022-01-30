@@ -14,16 +14,21 @@ import argparse, re
 from subprocess import run
 
 parser = argparse.ArgumentParser(description="Use CyberArk SSH to connect to Linux node")
+gparser = parser.add_mutually_exclusive_group()
 parser.add_argument("Host", metavar='<host-name>', type=str, help="Specify Hostname to connect")
 parser.add_argument("--vaultuser", "-v", type=str, default="abhat_c", help="Specify CyberArk Vault user")
-parser.add_argument("--user", "-u", type=str, default="seuseradmin5", help="Specify common assigned user")
+gparser.add_argument("--user", "-u", type=str, help="Specify common assigned user")
+gparser.add_argument("--local", "-l", type=str, help="Specify Server local account to log in as")
 args = parser.parse_args()
 
 lcl_accts = ['pythian', 'pythiansa', 'oracle', 'fdadmin', 'wmsadmin', 'sciadmin', 'grid', 'sas']
 
 ecomp = re.compile(r'ecom|crm[ps]|stdev|logistics')
 cyb_user = args.vaultuser
-comn_user = args.user
+if args.user:
+    comn_user = args.user
+else:
+    comn_user = args.local
 Hst = args.Host
 
 ### """Check if the host is an ECOM Host"""
