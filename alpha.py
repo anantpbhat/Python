@@ -9,5 +9,5 @@ while True:
     IN = IN.split()
     for i in IN:
         if not i.isalpha():
-            print ("I noticed a non-alphabet character!!")
+            print ("I noticed a non-alphabet character!!!")
             break
