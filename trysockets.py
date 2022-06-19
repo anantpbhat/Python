@@ -1,17 +1,72 @@
 #!/usr/bin/env python3
 
-import socket
+import socket, re, argparse, threading
+from datetime import datetime
 
-HOST = socket.gethostbyname(socket.gethostname())
-PORT = 9090
-Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+class BaseCl():
+    def __init__(self):
+        parser = argparse.ArgumentParser(description="Mini Network Socket application. Listens on a TCP port and accepts some cmds.")
+        parser.add_argument("--port", "-p", type=int, default=9090, help="specify a TCP Port to listen. Default is 9090.")
+        self.args = parser.parse_args()
+        self.HOST = socket.gethostbyname(socket.gethostname())
+        self.maxconn = 5
+        self.Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.help_p = re.compile(r'^help$|^\?$', re.I)
+        self.quit_p = re.compile(r'^quit$|^q$|^exit$|^disconnect$|^disconn$', re.I)
+        self.date_p = re.compile(r'^date$', re.I)
+        self.time_p = re.compile(r'^time$', re.I)
 
-Server.bind()(HOST, PORT))
-Server.listen(5)
+class Getstuff(BaseCl):
+    def getdttm(self):
+        dttm = datetime.now()
+        dt = (str(dttm.year) + "-" + str(dttm.month) + "-" + str(dttm.day)).encode('utf-8')
+        tm = (str(dttm.hour) + ":" + str(dttm.minute) + ":" + str(dttm.second)).encode('utf-8')
+        return(dt, tm)
 
-while true:
-    communication_socket, address = Server.accept()
-    print("Connect to IP: %s" % address)
-    mesg = communication_socket.recv(1024).decode('utf-8')
-    print("Message from Client: %s" % mesg)
-    
+class ListenPort(BaseCl):
+    def handle_conn(self, con, addrstr):
+        print("Connected to ClientIP: %s" % addrstr)
+        gtstuf = Getstuff()
+        while True:
+            mesg = con.recv(10240).decode('utf-8').rstrip()
+            if self.quit_p.search(mesg):
+                break
+            elif self.help_p.search(mesg):
+                print("Help requested from Client - %s" % addrstr)
+                con.send("Commands accepted: 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
+            elif self.date_p.search(mesg):
+                print("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                (DT, TM) = gtstuf.getdt()
+                con.send("DATE: %b\n".encode('utf-8') % DT)
+            elif self.time_p.search(mesg):
+                print("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                (DT, TM) = gtstuf.getdt()
+                con.send("TIME: %b\n".encode('utf-8') % TM)
+            else:
+                print("Message from ClientIP - %s: %s" % (addrstr, mesg))
+                con.send("Got your message, Thanks!\n".encode('utf-8'))
+        con.close()
+        print("Connection with Client %s ended!" % addrstr)
+        return
+
+    def start_srv(self):
+        self.Server.bind((self.HOST, self.args.port))
+        self.Server.listen(self.maxconn)
+        while True:
+            conn, (addr, port) = self.Server.accept()
+            thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr)))
+            thrd.start()
+            print("Active COnnections: %d" % (threading.activeCount() -1))
+        return
+
+    class MainProg(BaseCl):
+        def main(self):
+            print("Starting Server connection Listener...")
+            lstn = ListenPort()
+            lstn.start_srv()
+            return
+
+
+if __name__ == "__main__":
+    socketsrv = MainProg()
+    socketsrv.main()
