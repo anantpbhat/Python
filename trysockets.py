@@ -36,11 +36,11 @@ class ListenPort(BaseCl):
                 con.send("Commands accepted: 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
             elif self.date_p.search(mesg):
                 print("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                (DT, TM) = gtstuf.getdt()
+                (DT, TM) = gtstuf.getdttm()
                 con.send("DATE: %b\n".encode('utf-8') % DT)
             elif self.time_p.search(mesg):
                 print("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                (DT, TM) = gtstuf.getdt()
+                (DT, TM) = gtstuf.getdttm()
                 con.send("TIME: %b\n".encode('utf-8') % TM)
             else:
                 print("Message from ClientIP - %s: %s" % (addrstr, mesg))
@@ -59,8 +59,8 @@ class ListenPort(BaseCl):
             print("Active COnnections: %d" % (threading.activeCount() -1))
         return
 
-    class MainProg(BaseCl):
-        def main(self):
+class MainProg(BaseCl):
+    def main(self):
             print("Starting Server connection Listener...")
             lstn = ListenPort()
             lstn.start_srv()
