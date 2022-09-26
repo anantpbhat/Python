@@ -2,6 +2,7 @@ import re
 
 qp = re.compile(r'^q$|^quit$', re.I)
 
+### Commit this comment in GITHub
 while True:
     IN = input("Type in some Alphabets or (q|Q) to quit: ")
     if qp.search(IN):
