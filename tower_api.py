@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import argparse, requests
+
 class BaseCl():
   def __init__(self):
     parser = argparse.ArgumentParser(description="Trigger an AnsibleTower template job using API interface")
@@ -30,4 +32,3 @@ class MainProg(BaseCl):
 if __name__ == "__main__":
   ans_tower_api = MainProg()
   ans_tower_api.main()
-  
