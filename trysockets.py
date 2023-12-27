@@ -7,6 +7,7 @@ class BaseCl():
     def __init__(self):
         parser = argparse.ArgumentParser(description="Mini Network Socket application. Listens on a TCP port and accepts some cmds.")
         parser.add_argument("--port", "-p", type=int, default=9090, help="specify a TCP Port to listen. Default is 9090.")
+        parser.add_argument("--log", "-l", type=str, default="/Users/abhat/logs/trysockets.log", help="Specify file to log app output.")
         self.args = parser.parse_args()
         self.HOST = socket.gethostbyname(socket.gethostname())
         self.maxconn = 5
@@ -25,7 +26,7 @@ class Getstuff(BaseCl):
         return(dt, tm)
 
 class ListenPort(BaseCl):
-    def handle_conn(self, con, addrstr):
+    def handle_conn(self, con, addrstr, lfl):
         print("Connected to ClientIP: %s" % addrstr)
         gtstuf = Getstuff()
         while True:
@@ -34,21 +35,27 @@ class ListenPort(BaseCl):
                 break
             elif self.help_p.search(mesg):
                 print("Help requested from Client - %s" % addrstr)
+                lfl.write("Help requested from Client - %s" % addrstr)
                 con.send("Commands accepted: 'hello', 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
             elif self.hello_p.search(mesg):
                 print("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                lfl.write("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
                 print("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                lfl.write("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 (DT, TM) = gtstuf.getdttm()
                 con.send("DATE: %b\n".encode('utf-8') % DT)
             elif self.time_p.search(mesg):
                 print("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                lfl.write("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 (DT, TM) = gtstuf.getdttm()
                 con.send("TIME: %b\n".encode('utf-8') % TM)
             else:
                 print("Message from ClientIP - %s: %s" % (addrstr, mesg))
+                lfl.write("Message from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("Got your message, Thanks!\n".encode('utf-8'))
+        lfl.close()
         con.close()
         print("Connection with Client %s ended!" % addrstr)
         return
@@ -56,9 +63,10 @@ class ListenPort(BaseCl):
     def start_srv(self):
         self.Server.bind((self.HOST, self.args.port))
         self.Server.listen(self.maxconn)
+        logfl = open(self.args.log, 'a')
         while True:
             conn, (addr, port) = self.Server.accept()
-            thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr)))
+            thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr), logfl))
             thrd.start()
             print("Active Connections: %d" % (threading.activeCount() -1))
         return
