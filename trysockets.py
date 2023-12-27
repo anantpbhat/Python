@@ -12,6 +12,7 @@ class BaseCl():
         self.maxconn = 5
         self.Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.help_p = re.compile(r'^help$|^\?$', re.I)
+        self.hello_p = re.compile(r'^hello$', re.I)
         self.quit_p = re.compile(r'^quit$|^q$|^exit$|^disconnect$|^disconn$', re.I)
         self.date_p = re.compile(r'^date$', re.I)
         self.time_p = re.compile(r'^time$', re.I)
@@ -33,7 +34,10 @@ class ListenPort(BaseCl):
                 break
             elif self.help_p.search(mesg):
                 print("Help requested from Client - %s" % addrstr)
-                con.send("Commands accepted: 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
+                con.send("Commands accepted: 'hello', 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
+            elif self.hello_p.search(mesg):
+                print("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
                 print("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 (DT, TM) = gtstuf.getdttm()
@@ -56,7 +60,7 @@ class ListenPort(BaseCl):
             conn, (addr, port) = self.Server.accept()
             thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr)))
             thrd.start()
-            print("Active COnnections: %d" % (threading.activeCount() -1))
+            print("Active Connections: %d" % (threading.activeCount() -1))
         return
 
 class MainProg(BaseCl):
