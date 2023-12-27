@@ -18,6 +18,7 @@ class MEMSTAT:
         dttm = DT[0].split()
         return (dttm[0], dttm[1])
 
+### Get output filename from args and set it to stdout if the filename provided is such or not provided.
     def getfilename(self):
         (arg1, arg2) = self.getdatetime()
         if self.args.output == "stdout" or not self.args.output:
