@@ -25,7 +25,7 @@ class Getstuff(BaseCl):
         tm = (str(dttm.hour) + ":" + str(dttm.minute) + ":" + str(dttm.second)).encode('utf-8')
         return(dt, tm)
 
-class WrtOut(BaseCl):
+class LogIt(BaseCl):
     def wrtnow(self, stmt):
         with open(self.args.log, 'a') as lfl:
             print(stmt)
@@ -36,29 +36,29 @@ class ListenPort(BaseCl):
     def handle_conn(self, con, addrstr):
         print("Connected to ClientIP: %s" % addrstr)
         gtstuf = Getstuff()
-        wrtout = WrtOut()
+        logit = LogIt()
         while True:
             mesg = con.recv(10240).decode('utf-8').rstrip()
             (DT, TM) = gtstuf.getdttm()
             if self.quit_p.search(mesg):
                 break
             elif self.help_p.search(mesg):
-                wrtout.wrtnow("Help requested from Client - %s" % addrstr)
+                logit.wrtnow("Help requested from Client - %s" % addrstr)
                 con.send("Commands accepted: 'hello', 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
             elif self.hello_p.search(mesg):
-                wrtout.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                logit.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
-                wrtout.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                logit.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("DATE: %b\n".encode('utf-8') % DT)
             elif self.time_p.search(mesg):
-                wrtout.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                logit.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("TIME: %b\n".encode('utf-8') % TM)
             else:
-                wrtout.wrtnow("Message from ClientIP - %s: %s" % (addrstr, mesg))
+                logit.wrtnow("Message from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("Got your message, Thanks!\n".encode('utf-8'))
         con.close()
-        wrtout.wrtnow("Connection with Client %s ended!" % addrstr)
+        logit.wrtnow("Connection with Client %s ended!" % addrstr)
         return
 
     def start_srv(self):
