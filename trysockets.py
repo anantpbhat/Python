@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import socket, re, argparse, threading
+import socket, re, argparse, threading, concurrent.futures
 from datetime import datetime
 
 class BaseCl():
@@ -11,7 +11,7 @@ class BaseCl():
         self.args = parser.parse_args()
         self.HOST = socket.gethostbyname(socket.gethostname())
         self.maxconn = 5
-        self.Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)         ### SOCK_STREAM represents a TCP connection
         self.help_p = re.compile(r'^help$|^\?$', re.I)
         self.hello_p = re.compile(r'^hello$', re.I)
         self.quit_p = re.compile(r'^quit$|^q$|^exit$|^disconnect$|^disconn$', re.I)
@@ -66,9 +66,11 @@ class ListenPort(BaseCl):
         self.Server.listen(self.maxconn)
         while True:
             conn, (addr, port) = self.Server.accept()
+            #exe = concurrent.futures.ThreadPoolExecutor(max_workers=5)
+            #exe.submit(self.handle_conn, conn, str(addr))
             thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr)))
             thrd.start()
-            print("Active Connections: %d" % (threading.activeCount() -1))
+            print("Active Connections: %d" % (threading.activeCount() - 1))     ### Active connections not avail in futures module.
         return
 
 class MainProg(BaseCl):
