@@ -25,48 +25,48 @@ class Getstuff(BaseCl):
         tm = (str(dttm.hour) + ":" + str(dttm.minute) + ":" + str(dttm.second)).encode('utf-8')
         return(dt, tm)
 
+class WrtOut(BaseCl):
+    def wrtnow(self, stmt):
+        with open(self.args.log, 'a') as lfl:
+            print(stmt)
+            lfl.write("%s\n" % stmt)
+        return
+
 class ListenPort(BaseCl):
-    def handle_conn(self, con, addrstr, lfl):
+    def handle_conn(self, con, addrstr):
         print("Connected to ClientIP: %s" % addrstr)
         gtstuf = Getstuff()
+        wrtout = WrtOut()
         while True:
             mesg = con.recv(10240).decode('utf-8').rstrip()
+            (DT, TM) = gtstuf.getdttm()
             if self.quit_p.search(mesg):
                 break
             elif self.help_p.search(mesg):
-                print("Help requested from Client - %s" % addrstr)
-                lfl.write("Help requested from Client - %s" % addrstr)
+                wrtout.wrtnow("Help requested from Client - %s" % addrstr)
                 con.send("Commands accepted: 'hello', 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
             elif self.hello_p.search(mesg):
-                print("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                lfl.write("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                wrtout.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
-                print("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                lfl.write("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                (DT, TM) = gtstuf.getdttm()
+                wrtout.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("DATE: %b\n".encode('utf-8') % DT)
             elif self.time_p.search(mesg):
-                print("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                lfl.write("Command from ClientIP - %s: %s" % (addrstr, mesg))
-                (DT, TM) = gtstuf.getdttm()
+                wrtout.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("TIME: %b\n".encode('utf-8') % TM)
             else:
-                print("Message from ClientIP - %s: %s" % (addrstr, mesg))
-                lfl.write("Message from ClientIP - %s: %s" % (addrstr, mesg))
+                wrtout.wrtnow("Message from ClientIP - %s: %s" % (addrstr, mesg))
                 con.send("Got your message, Thanks!\n".encode('utf-8'))
-        lfl.close()
         con.close()
-        print("Connection with Client %s ended!" % addrstr)
+        wrtout.wrtnow("Connection with Client %s ended!" % addrstr)
         return
 
     def start_srv(self):
         self.Server.bind((self.HOST, self.args.port))
         self.Server.listen(self.maxconn)
-        logfl = open(self.args.log, 'a')
         while True:
             conn, (addr, port) = self.Server.accept()
-            thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr), logfl))
+            thrd = threading.Thread(target=self.handle_conn, args=(conn, str(addr)))
             thrd.start()
             print("Active Connections: %d" % (threading.activeCount() -1))
         return
