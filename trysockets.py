@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import socket, re, argparse, threading, concurrent.futures
-from datetime import datetime
+import socket, re, argparse, threading, concurrent.futures, getstuff, logit
 
 class BaseCl():
     def __init__(self):
@@ -18,47 +17,34 @@ class BaseCl():
         self.date_p = re.compile(r'^date$', re.I)
         self.time_p = re.compile(r'^time$', re.I)
 
-class Getstuff(BaseCl):
-    def getdttm(self):
-        dttm = datetime.now()
-        dt = (str(dttm.year) + "-" + str(dttm.month) + "-" + str(dttm.day)).encode('utf-8')
-        tm = (str(dttm.hour) + ":" + str(dttm.minute) + ":" + str(dttm.second)).encode('utf-8')
-        return(dt, tm)
-
-class LogIt(BaseCl):
-    def wrtnow(self, stmt):
-        with open(self.args.log, 'a') as lfl:
-            print(stmt)
-            lfl.write("%s\n" % stmt)
-        return
-
 class ListenPort(BaseCl):
     def handle_conn(self, con, addrstr):
         print("Connected to ClientIP: %s" % addrstr)
-        gtstuf = Getstuff()
-        logit = LogIt()
+        logfl = self.args.log
+        gtstuf = getstuff.Getstuff()
+        log_it = logit.LogIt()
         while True:
             mesg = con.recv(10240).decode('utf-8').rstrip()
             (DT, TM) = gtstuf.getdttm()
             if self.quit_p.search(mesg):
                 break
             elif self.help_p.search(mesg):
-                logit.wrtnow("Help requested from Client - %s" % addrstr)
+                log_it.wrtnow("Help requested from Client - %s" % addrstr, logfl)
                 con.send("Commands accepted: 'hello', 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
             elif self.hello_p.search(mesg):
-                logit.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                log_it.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg), logfl)
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
-                logit.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                log_it.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg), logfl)
                 con.send("DATE: %b\n".encode('utf-8') % DT)
             elif self.time_p.search(mesg):
-                logit.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg))
+                log_it.wrtnow("Command from ClientIP - %s: %s" % (addrstr, mesg), logfl)
                 con.send("TIME: %b\n".encode('utf-8') % TM)
             else:
-                logit.wrtnow("Message from ClientIP - %s: %s" % (addrstr, mesg))
+                log_it.wrtnow("Message from ClientIP - %s: %s" % (addrstr, mesg), logfl)
                 con.send("Got your message, Thanks!\n".encode('utf-8'))
         con.close()
-        logit.wrtnow("Connection with Client %s ended!" % addrstr)
+        log_it.wrtnow("Connection with Client %s ended!" % addrstr, logfl)
         return
 
     def start_srv(self):
