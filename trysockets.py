@@ -2,7 +2,6 @@
 
 import socket, re, argparse, threading, concurrent.futures, getstuff, logit
 
-
 class BaseCl():
     def __init__(self):
         parser = argparse.ArgumentParser(description="Mini Network Socket application. Listens on a TCP port and accepts some cmds.")
