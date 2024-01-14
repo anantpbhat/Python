@@ -25,7 +25,7 @@ class ListenPort(BaseCl):
         log_it = myclass.sockets.logit.LogIt()
         while True:
             mesg = con.recv(10240).decode('utf-8').rstrip()
-            (DT, TM) = gtstuf.getdttm().encode('utf-8')
+            (DT, TM) = gtstuf.getdttm()
             if self.quit_p.search(mesg):
                 break
             elif self.help_p.search(mesg):
