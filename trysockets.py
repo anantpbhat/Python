@@ -36,10 +36,10 @@ class ListenPort(BaseCl):
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
                 log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
-                con.send("DATE: %b\n".encode('utf-8') % DT)
+                con.send("DATE: %b\n".encode('utf-8') % DT.encode('utf-8'))
             elif self.time_p.search(mesg):
                 log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
-                con.send("TIME: %b\n".encode('utf-8') % TM)
+                con.send("TIME: %b\n".encode('utf-8') % TM.encode('utf-8'))
             else:
                 log_it.wrtnow("%s %s Message from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
                 con.send("Got your message, Thanks!\n".encode('utf-8'))
