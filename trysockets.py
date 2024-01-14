@@ -32,19 +32,19 @@ class ListenPort(BaseCl):
                 log_it.wrtnow("%s %s Help requested from Client - %s" % (DT, TM, addrstr), logfl)
                 con.send("Commands accepted: 'hello', 'date', 'time', 'help', 'quit'.\n Anything else will be taken as a message.\n".encode('utf-8'))
             elif self.hello_p.search(mesg):
-                log_it.wrtnow("%b %b Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
+                log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
-                log_it.wrtnow("%b %b Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
+                log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
                 con.send("DATE: %b\n".encode('utf-8') % DT)
             elif self.time_p.search(mesg):
-                log_it.wrtnow("%b %b Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
+                log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
                 con.send("TIME: %b\n".encode('utf-8') % TM)
             else:
-                log_it.wrtnow("%b %b Message from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
+                log_it.wrtnow("%s %s Message from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
                 con.send("Got your message, Thanks!\n".encode('utf-8'))
         con.close()
-        log_it.wrtnow("%b %b Connection with Client %s ended!" % (DT, TM, addrstr), logfl)
+        log_it.wrtnow("%s %s Connection with Client %s ended!" % (DT, TM, addrstr), logfl)
         return
 
     def start_srv(self):
