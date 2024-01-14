@@ -25,7 +25,7 @@ class ListenPort(BaseCl):
         log_it = myclass.sockets.logit.LogIt()
         while True:
             mesg = con.recv(10240).decode('utf-8').rstrip()
-            (DT, TM) = gtstuf.getdttm()
+            (DT, TM, (DTbin, TMbin)) = gtstuf.getdttm()     ### Get Date, Time in string and binary formats
             if self.quit_p.search(mesg):
                 break
             elif self.help_p.search(mesg):
@@ -36,10 +36,10 @@ class ListenPort(BaseCl):
                 con.send("Hello there Buddy!\n".encode('utf-8'))
             elif self.date_p.search(mesg):
                 log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
-                con.send("DATE: %b\n".encode('utf-8') % DT.encode('utf-8'))
+                con.send("DATE: %b\n".encode('utf-8') % DTbin)
             elif self.time_p.search(mesg):
                 log_it.wrtnow("%s %s Command from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
-                con.send("TIME: %b\n".encode('utf-8') % TM.encode('utf-8'))
+                con.send("TIME: %b\n".encode('utf-8') % TMbin)
             else:
                 log_it.wrtnow("%s %s Message from ClientIP - %s: %s" % (DT, TM, addrstr, mesg), logfl)
                 con.send("Got your message, Thanks!\n".encode('utf-8'))

@@ -1,4 +1,5 @@
 
+### Write any message provided as Arg1 to a logfile mentioned in Arg2.
 
 class LogIt():
     def wrtnow(self, stmt, logfile):
