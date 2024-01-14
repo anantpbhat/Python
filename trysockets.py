@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import socket, re, argparse, threading, concurrent.futures, myclass.sockets.getstuff, myclass.sockets.logit
+import socket, re, argparse, threading, myclass.getstuff, myclass.logit
 
 class BaseCl():
     def __init__(self):
@@ -21,8 +21,8 @@ class ListenPort(BaseCl):
     def handle_conn(self, con, addrstr):
         print("Connected to ClientIP: %s" % addrstr)
         logfl = self.args.log
-        gtstuf = myclass.sockets.getstuff.Getstuff()
-        log_it = myclass.sockets.logit.LogIt()
+        gtstuf = myclass.getstuff.Getstuff()
+        log_it = myclass.logit.LogIt()
         while True:
             mesg = con.recv(10240).decode('utf-8').rstrip()
             (DT, TM, DTbin, TMbin) = gtstuf.getdttm()     ### Get Date, Time in string and binary formats
