@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# Testing in PyCharm.
 import socket, re, argparse, threading, myclass.getstuff, myclass.logit
 
 class BaseCl():
