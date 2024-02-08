@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Assessment Test HTML</title>
+        <link rel="stylesheet" href="mycss/testcss.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    </head>
+
+    <body>
+        <h1>Puppy Adoption Page</h1>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <h3>Please enter information to adopt a Puppy</h3>
+        <p>Please fill in: First Name, Last Name, Password and Email fields are required</p>
+        <form method="get">
+            <label for="firstname">First Name: </label>
+            <input type="text" id="firstname" name="first_name" placeholder="First Name">
+            <label for="lastname">Last Name: </label>
+            <input type="text" id="lastname" name="last_name" placeholder="Last Name">
+            <br> <br>
+            <label for="email">Email: </label>
+            <input type="email" id="email" name="email_id" placeholder="example@abc.com">
+            <label for="pass">Password: </label>
+            <input type="password" id="pass" name="passwd" placeholder="">
+            <br> <br>
+            <span>Are you over the age of 18?</span>
+            <br>
+            <label for="yesguy">Yes: </label>
+            <input type="radio" id="yesguy" name="age_choice" value="yes">
+            <label for="noguy">No: </label>
+            <input type="radio" id="noguy" name="age_choice" value="no">
+            <br>
+            <span>Do you have a Credit Card or PayPal?</span>
+            <br>
+            <select name="pay_method">
+                <option value="CreditCard">Credit Card</option>
+                <option value="PayPal">PayPal</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Submit Feedback">
+        </form>
+        <br>
+
+        <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/Users/abhat/Downloads/cutepuppies1.jpg" class="d-block-w-100" alt="">
+                </div>
+                <div class="carousel-item">
+                    <img src="/Users/abhat/Downloads/cutepuppies2.jpg" class="d-block-w-100" alt="">
+                </div>
+                <div class="carousel-item">
+                    <img src="/Users/abhat/Downloads/cutepuppies3.jpg" class="d-block-w-100" alt="">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </body>
+</html>

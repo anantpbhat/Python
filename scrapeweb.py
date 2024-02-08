@@ -2,7 +2,7 @@
 
 ########################################################################
 #                                                                      #
-# Parse HTML Page, takes input file as an argument or will prompt      #
+# Parse myhtml Page, takes input file as an argument or will prompt      #
 # for User input.                                                      #
 # Author: Anant Bhat.                                                  #
 #                                                                      #
