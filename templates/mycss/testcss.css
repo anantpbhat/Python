@@ -1,0 +1,19 @@
+/* This is a CSS file */
+
+body{
+    background-color: lightyellow;
+}
+
+input, select{
+    border: 2px solid blue;
+}
+
+input[type="radio"] {
+    border: 2px solid blue;
+}
+
+.d-block-w-100, .carousel-control-next, .carousel-control-next-icon{
+    width: 600px;
+    height: 400px;
+    border: 2px solid red;
+}
