@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block snippet %}
-    <div class="jumbotron">
-        <h2>Welcome to Sign Up Page!</h2>
-        <p>Please fill out this form -</p>
-        <form action={{ url_for('thank_you') }}>
-            <label for="first">First Name:</label>
-            <input type="text" name="first">
-            <label for="last">Last Name:</label>
-            <input type="text" name="last">
-            <input type="submit" value="Submit Form">
-        </form>
-    </div>
+<div class="jumbotron">
+    <h2>Welcome to Sign Up Page!</h2>
+    <p>Please fill out this form -</p>
+    <form action={{ url_for('thank_you') }}>
+        <label for="first">First Name:</label>
+        <input type="text" name="first">
+        <label for="last">Last Name:</label>
+        <input type="text" name="last">
+        <input type="submit" value="Submit Form">
+    </form>
+</div>
 {% endblock %}
