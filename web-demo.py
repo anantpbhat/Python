@@ -1,10 +1,7 @@
 
 from flask import Flask, render_template, request
-import re
 
-start_p = re.compile(r'^[A-Z].*')
-lower_p = re.compile(r'.*[a-z].*')
-num_p = re.compile(r'.*[0-9]$')
+
 app = Flask(__name__)
 
 @app.route('/')     ###127.0.0.1:5000/
@@ -29,16 +26,13 @@ def thank_you():
     last = request.args.get('last')
     uname = request.args.get('username')
     failures = []
-    if not start_p.search(uname):
+    if not uname[0].isupper():
         failures.append('Username "%s" does not start with uppercase letter' % uname)
-    if not lower_p.search(uname):
+    if not any(l.islower() for l in uname):
         failures.append('No lowercase letter found in Username "%s"' % uname)
-    if not num_p.search(uname):
+    if not uname[-1].isdigit():
         failures.append('Username "%s" does not end with a number' % uname)
-    if len(failures) > 0:
-        return render_template('result.html', uname=uname, failures=failures)
-    else:
-        return render_template('thankyou.html', uname=uname, first=first, last=last)
+    return render_template('thankyou.html', uname=uname, first=first, last=last, failures=failures)
 
 @app.errorhandler(404)
 def url_error(e):

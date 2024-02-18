@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block snippet %}
 <div class="container-fluid">
+    {% if len(failures) > 0 %}
+    <ul>
+        % for words in failures %}
+        <li><h2>{{ words }}</h2></li>
+        {% endfor %}
+    </ul>
+    {% else %}
     <ul>
         <li><h2>Username "{{ uname }}" passed all verification requirements.</h2></li>
         <li><h2>"{{ first }} {{ last }}" has been registered. Thank you!</h2></li>
     </ul>
+    {% endif %}
 </div>
 {% endblock %}
