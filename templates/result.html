@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block snippet %}
+<div class="container-fluid">
+    <ul>
+        {% for words in failures %}
+        <li><h2>{{ words }}</h2></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block snippet %}
-<div class="jumbotron">
+<div class="container-fluid">
     <h2>Welcome to Sign Up Page!</h2>
     <p>Please fill out this form -</p>
     <form action={{ url_for('thank_you') }}>
@@ -8,6 +8,10 @@
         <input type="text" name="first">
         <label for="last">Last Name:</label>
         <input type="text" name="last">
+        <br><br>
+        <label for="username">Username:</label>
+        <input type="text" name="username">
+        <br><br>
         <input type="submit" value="Submit Form">
     </form>
 </div>

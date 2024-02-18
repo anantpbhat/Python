@@ -1,6 +1,10 @@
 
 from flask import Flask, render_template, request
+import re
 
+start_p = re.compile(r'^[A-Z].*')
+lower_p = re.compile(r'.*[a-z].*')
+num_p = re.compile(r'.*[0-9]$')
 app = Flask(__name__)
 
 @app.route('/')     ###127.0.0.1:5000/
@@ -23,7 +27,18 @@ def signup_form():
 def thank_you():
     first = request.args.get('first')
     last = request.args.get('last')
-    return render_template('thankyou.html', first=first, last=last)
+    uname = request.args.get('username')
+    failures = []
+    if not start_p.search(uname):
+        failures.append('Username "%s" does not start with uppercase letter' % uname)
+    if not lower_p.search(uname):
+        failures.append('No lowercase letter found in Username "%s"' % uname)
+    if not num_p.search(uname):
+        failures.append('Username "%s" does not end with a number' % uname)
+    if len(failures) > 0:
+        return render_template('result.html', uname=uname, failures=failures)
+    else:
+        return render_template('thankyou.html', uname=uname, first=first, last=last)
 
 @app.errorhandler(404)
 def url_error(e):
