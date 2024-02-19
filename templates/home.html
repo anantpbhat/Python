@@ -1,0 +1,16 @@
+<div class="container-fluid text-center">
+    <p>
+        {% if breed %}
+        The Dog breed you entered is "{{ breed }}"
+        Update the breed in form below -
+        {% else %}
+        Enter the Dog breed here:
+        {% endif %}
+    </p>
+</div>
+
+<form class="container-fluid text-center" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.breed.label }} {{ form.breed() }}
+    {{ form.submit() }}
+</form>

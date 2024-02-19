@@ -20,7 +20,7 @@ def puppylatin(pupname):
 def signup_form():
     return render_template('signup.html')
 
-@app.route('/thank_you')     ###127.0.0.1:5000/info
+@app.route('/thank_you')     ###127.0.0.1:5000/thank_you
 def thank_you():
     first = request.args.get('first')
     last = request.args.get('last')
