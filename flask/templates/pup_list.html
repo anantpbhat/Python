@@ -1,0 +1,11 @@
+{% extends "pup_base.html" %}
+{% block snippet %}
+    <div class="jumbotron">
+        <h1>List of all Puppies at this Org.</h1>
+            <ul>
+                {% for pup in puppies %}
+                    <li><h4>{{ pup }}</h4></li>
+                {% endfor %}
+            </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "pup_base.html" %}
+{% block snippet %}
+<div class="jumbotron">
+    <h1>Do you have a Puppy for adoption?</h1>
+    <p>Add a new Puppy to our DB!</p>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name() }}
+        {{ form.owner.label }} {{ form.owner() }}
+        {{ form.toys.label }} {{ form.toys() }}
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}
