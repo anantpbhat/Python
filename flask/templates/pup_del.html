@@ -1,5 +1,13 @@
 {% extends "pup_base.html" %}
 {% block snippet %}
+{% for Msg in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{Msg}}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+{% endfor %}
     <div class="jumbotron">
         <h2>Did a Puppy get adopted?</h2>
         <p>If yes, please remove the Puppy from our DB.</p>

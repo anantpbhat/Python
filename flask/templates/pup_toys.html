@@ -9,11 +9,12 @@
     </div>
 {% endfor %}
 <div class="jumbotron">
-    <h1>Do you have a Puppy for adoption?</h1>
-    <p>Add a new Puppy to our DB!</p>
+    <h1>Add Toy/s for a Puppy.</h1>
+    <p>Add Puppy Toy/s to our DB!</p>
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{ form.name.label }} {{ form.name() }}
+        {{ form.toys.label }} {{ form.toys() }}
+        {{ form.id.label }} {{ form.id() }}
         {{ form.submit() }}
     </form>
 </div>
