@@ -24,19 +24,21 @@ class Puppy(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def list_owner(self):
+        if self.owner:
+            return self.owner.name
+        else:
+            return "None"
+
     def list_toys(self):
-        toy_list = ';'.join([Ty.item_name for Ty in self.toys])
-        return toy_list
+        if self.toys:
+            for Ty in self.toys:
+                return Ty.item_name.replace(',', ';')
+        else:
+            return "None"
 
     def __repr__(self):
-        if self.owner.name and len(self.list_toys()) > 0:
-            return f"Puppy name: {self.name}, Puppy ID: {self.id}, Puppy Owner: {self.owner.name}, Puppy Toys: {self.list_toys()}"
-        elif self.owner.name and len(self.list_toys()) == 0:
-            return f"Puppy name: {self.name}, Puppy ID: {self.id}, Puppy Owner: {self.owner.name}, Puppy Toys: None"
-        elif len(self.list_toys()) > 0 and not self.owner.name:
-            return f"Puppy name: {self.name}, Puppy ID: {self.id}, Puppy Toys: {self.list_toys()}, Puppy Owner: None"
-        else:
-            return f"Puppy name: {self.name}, Puppy ID: {self.id}, Puppy Owner: None, Puppy Toys: None"
+        return f"Puppy name: {self.name}, Puppy ID: {self.id}, Puppy Owner: {self.list_owner()}, Puppy Toys: {self.list_toys()}"
 
 class Owner(db.Model):
 
