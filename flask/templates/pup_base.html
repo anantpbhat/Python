@@ -14,24 +14,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse navbar-nav" id="navbarNav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ url_for('index')}}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('add_pup')}}">Add</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('list_pup')}}">List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('del_pup')}}">Delete</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('owner_pup')}}">Owner</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('toys_pup')}}">Toys</a>
-                </li>
+                <a class="nav-item nav-link active" href="{{ url_for('index')}}">Home</a>
+                <a class="nav-item nav-link" href="{{url_for('add_pup')}}">Add</a>
+                <a class="nav-item nav-link" href="{{url_for('list_pup')}}">List</a>
+                <a class="nav-item nav-link" href="{{url_for('del_pup')}}">Delete</a>
+                <a class="nav-item nav-link" href="{{url_for('owner_pup')}}">Owner</a>
+                <a class="nav-item nav-link" href="{{url_for('toys_pup')}}">Toys</a>
             </div>
         </nav>
 
