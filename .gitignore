@@ -1,2 +1,5 @@
 .idea/*.xml
 flask/pup_data.sqlite
+.idea/misc.xml
+.idea/workspace.xml
+flask/pup_data.sqlite
