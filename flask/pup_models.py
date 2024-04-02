@@ -4,7 +4,7 @@ from typing import List
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-db_file = str('sqlite:///' + basedir + 'pup_data.sqlite')
+db_file = str('sqlite:///' + basedir + '/pup_data.sqlite')
 engine = create_engine(db_file, echo=True)
 
 Base = declarative_base()
@@ -13,8 +13,8 @@ class Puppy(Base):
     __tablename__ = 'puppies'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    owner: Mapped["Owner"] = relationship(back_populates="puppy")
-    toys: Mapped[List["Toy"]] = relationship(back_populates="puppy")
+    owner: Mapped['Owner'] = relationship(back_populates="puppy")
+    toys: Mapped[List['Toy']] = relationship(back_populates="puppy")
 
     def __init__(self, name):
         self.name = name
@@ -40,7 +40,7 @@ class Owner(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     puppy_id: Mapped[int] = mapped_column(ForeignKey("puppies.id"))
-    puppy: Mapped["Puppy"] = relationship(back_populates="owner")
+    puppy: Mapped['Puppy'] = relationship(back_populates="owner")
 
     def __init__(self, owner, puppy_id):
         self.name = owner
@@ -51,7 +51,7 @@ class Toy(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     item_name: Mapped[str]
     puppy_id: Mapped[int] = mapped_column(ForeignKey("puppies.id"))
-    puppy: Mapped["Puppy"] = relationship(back_populates="toys")
+    puppy: Mapped['Puppy'] = relationship(back_populates="toys")
 
     def __init__(self, item_name, puppy_id):
         self.item_name = item_name
