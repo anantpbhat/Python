@@ -1,4 +1,4 @@
-{% extends "pup_base.html" %}
+{% extends "base.html" %}
 {% block snippet %}
 {% for Msg in get_flashed_messages() %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -9,12 +9,11 @@
     </div>
 {% endfor %}
 <div class="jumbotron">
-    <h1>Add Toy/s for a Puppy.</h1>
-    <p>Add Puppy Toy/s to our DB!</p>
+    <h1>Do you have a Puppy for adoption?</h1>
+    <p>Add a new Puppy to our DB!</p>
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{ form.toys.label }} {{ form.toys() }}
-        {{ form.id.label }} {{ form.id() }}
+        {{ form.name.label }} {{ form.name() }}
         {{ form.submit() }}
     </form>
 </div>

@@ -1,13 +1,7 @@
-from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
-import os
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-db_file = str('sqlite:///' + basedir + '/pup_data.sqlite')
-engine = create_engine(db_file, echo=True)
-
-Base = declarative_base()
+from PupAdoption import Base
 
 class Puppy(Base):
     __tablename__ = 'puppies'
