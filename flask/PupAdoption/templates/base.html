@@ -14,15 +14,21 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse navbar-nav" id="navbarNav">
-                <a class="nav-item nav-link active" href="{{ url_for('home')}}">Home</a>
-                <a class="nav-item nav-link" href="{{url_for('puppies.add_pup')}}">Add</a>
-                <a class="nav-item nav-link" href="{{url_for('puppies.list_pup')}}">List</a>
-                <a class="nav-item nav-link" href="{{url_for('puppies.del_pup')}}">Delete</a>
-                <a class="nav-item nav-link" href="{{url_for('owners.add_owner')}}">Owner</a>
-                <a class="nav-item nav-link" href="{{url_for('toys.add_toys')}}">Toys</a>
+                <h4><a class="nav-item nav-link active" href="{{ url_for('home')}}">Home</a></h4>
+                {% if current_user.is_authenticated  %}
+                <h4><a class="nav-item nav-link" href="{{url_for('puppies.add_pup')}}">Add</a></h4>
+                <h4><a class="nav-item nav-link" href="{{url_for('puppies.list_pup')}}">List</a></h4>
+                <h4><a class="nav-item nav-link" href="{{url_for('puppies.del_pup')}}">Delete</a></h4>
+                <h4><a class="nav-item nav-link" href="{{url_for('owners.add_owner')}}">Owner</a></h4>
+                <h4><a class="nav-item nav-link" href="{{url_for('toys.add_toys')}}">Toys</a></h4>
+                <h4><a class="nav-item nav-link" href="{{url_for('users.logout')}}">Logout</a></h4>
+                {% else %}
+                <h4><a class="nav-item nav-link" href="{{url_for('users.login')}}">Login</a></h4>
+                <h4><a class="nav-item nav-link" href="{{url_for('users.register')}}">Register</a></h4>
+                {% endif %}
             </div>
         </nav>
-
+ 
         {% block snippet %}
 
         {% endblock %}

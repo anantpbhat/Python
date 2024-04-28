@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from sqlalchemy.orm import Session
+from flask_login import login_required
 from PupAdoption import engine
 from PupAdoption.pup_models import Toy, Puppy
 from PupAdoption.toys.forms import ToyForm
@@ -7,6 +8,7 @@ from PupAdoption.toys.forms import ToyForm
 toys_blueprints = Blueprint('toys', __name__, template_folder='templates/toys')
 
 @toys_blueprints.route('/add', methods=['GET', 'POST'])
+@login_required
 def add_toys():
     tform = ToyForm()
     if tform.validate_on_submit():

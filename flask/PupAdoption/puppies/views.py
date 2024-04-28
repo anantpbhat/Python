@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from sqlalchemy.orm import Session
+from flask_login import login_required
 from PupAdoption import engine
 from PupAdoption.pup_models import Puppy
 from PupAdoption.puppies.forms import AddForm, DelForm
@@ -7,6 +8,7 @@ from PupAdoption.puppies.forms import AddForm, DelForm
 puppies_blueprints = Blueprint('puppies', __name__, template_folder='templates/puppies')
 
 @puppies_blueprints.route('/add', methods=['GET', 'POST'])
+@login_required
 def add_pup():
     aform = AddForm()
     if aform.validate_on_submit():
@@ -20,12 +22,14 @@ def add_pup():
     return render_template('add.html', form = aform)
 
 @puppies_blueprints.route('/list')
+@login_required
 def list_pup():
     with Session(engine) as session:  
         puppies = session.query(Puppy).all()
         return render_template('list.html', puppies=puppies)
     
 @puppies_blueprints.route('/delete', methods=['GET', 'POST'])
+@login_required
 def del_pup():
     dform = DelForm()
     if dform.validate_on_submit():

@@ -10,11 +10,7 @@
     </div>
 {% endfor %}
 <div class="jumbotron">
-  {% if current_user.is_authenticated %}
-  <h2>Hello {{current_user.username}}!!!</h2>
+  <h2>Hello {{current_user.username}} - You are Logged in!!!</h2>
   <h2>Welcome to Puppy Adoption Site!</h2>
-  {% else %}
-  <h2>Please 'Login' or 'Register'.</h2>
-  {% endif %}
 </div>
 {% endblock %}

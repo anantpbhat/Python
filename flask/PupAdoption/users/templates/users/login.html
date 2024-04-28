@@ -10,11 +10,11 @@
     </div>
 {% endfor %}
 <div class="jumbotron">
-  {% if current_user.is_authenticated %}
-  <h2>Hello {{current_user.username}}!!!</h2>
-  <h2>Welcome to Puppy Adoption Site!</h2>
-  {% else %}
-  <h2>Please 'Login' or 'Register'.</h2>
-  {% endif %}
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.email.label }} {{ form.email() }}<br>
+        {{ form.passwd.label }} {{ form.passwd() }}<br>
+        {{ form.submit() }}
+    </form>
 </div>
 {% endblock %}

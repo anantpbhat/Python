@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block snippet %}
+<div class="jumbotron">
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.email.label }} {{ form.email() }}<br>
+        {{ form.username.label }} {{ form.username() }}<br>
+        {{ form.passwd.label }} {{ form.passwd() }}<br>
+        {{ form.pass_confirm.label }} {{ form.pass_confirm() }}<br>
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}

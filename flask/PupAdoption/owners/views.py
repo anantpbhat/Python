@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from sqlalchemy.orm import Session
+from flask_login import login_required
 from PupAdoption import engine
 from PupAdoption.pup_models import Owner
 from PupAdoption.owners.forms import OwnerForm
@@ -7,6 +8,7 @@ from PupAdoption.owners.forms import OwnerForm
 owners_blueprints = Blueprint('owners', __name__, template_folder='templates/owners')
 
 @owners_blueprints.route('/add', methods=['GET', 'POST'])
+@login_required
 def add_owner():
     oform = OwnerForm()
     if oform.validate_on_submit():
