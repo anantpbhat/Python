@@ -1,11 +1,11 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from PupAdoption import Base, login_manager, engine
+from PupAdoption import db, login_manager
 
-class Puppy(Base):
+class Puppy(db.Model):
     __tablename__ = 'puppies'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
@@ -23,15 +23,17 @@ class Puppy(Base):
         
     def list_toys(self):
         if self.toys:
+            ltoys = []
             for Ty in self.toys:
-                return Ty.item_name.replace(',', ';')
+                ltoys.append(Ty.item_name)
+            return ";".join(ltoys)
         else:
             return "None"
         
     def __repr__(self):
         return f"Puppy name: {self.name}, Puppy ID: {self.id}, Puppy Owner: {self.list_owner()}, Puppy Toys: {self.list_toys()}"
 
-class Owner(Base):
+class Owner(db.Model):
     __tablename__ = 'owners'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
@@ -42,7 +44,7 @@ class Owner(Base):
         self.name = owner
         self.puppy_id = puppy_id
 
-class Toy(Base):
+class Toy(db.Model):
     __tablename__ = 'toys'
     id: Mapped[int] = mapped_column(primary_key=True)
     item_name: Mapped[str]
@@ -55,11 +57,10 @@ class Toy(Base):
 
 @login_manager.user_loader
 def load_user(user_id):
-    with Session(engine) as session:
-        user = session.query(User).get(user_id)
-        return user
+    user = db.get_or_404(User, user_id)
+    return user
 
-class User(Base, UserMixin):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(unique=True, index=True)
