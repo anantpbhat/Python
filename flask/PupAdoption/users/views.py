@@ -39,8 +39,8 @@ def register():
         user = User(email=rform.email.data, 
                     username=rform.username.data, 
                     passwd=rform.passwd.data)
-        #rform.check_email(user.email)
-        #rform.check_username(user.username)
+        rform.check_email(user.email)
+        rform.check_username(user.username)
         db.session.add(user)
         db.session.commit()
         flash("User %s - Registered Successfully!!" % user.username)
