@@ -41,3 +41,41 @@ class BaseCl():
         self.log = []
         self.results = {}
 
+
+class MainProd(BaseCl):
+  """Main program class"""
+  def __init__(self):
+    super().__init__()
+    if self.module.params['cisco']:
+      self.chassis = self.module.params['cisco']['chassis']
+      self.blade = self.module.params['cisco']['blade']
+      self.hwmdl = self.module.params['cisco']['model']
+      self.domusr = f"ucs-AMS\\{self.module.params['mgmtuser']}"
+    elif self.module.params['dell']:
+      self.domusr = f"{self.module.params['mgmtuser']}@ams.bnymellon.net"
+      if "r750" in self.module.params['dell']['model']:
+        self.nicslt = "1-1-1"
+        self.nicpri = "ens1f0np0"
+        self.infsec = "ens3f0np0"
+        self.hwmdl = "r750"
+      if "r760_emr" in self.module.params['dell']['model']:
+        self.nicslt = "1-1-1"
+        self.nicpri = "ens1f0np0"
+        self.infsec = "ens7f0np0"
+        self.hwmdl = "r760"
+      if "r760_spr" in self.module.params['dell']['model']:
+        self.nicslt = "3-1-1"
+        self.nicpri = "ens3f0np0"
+        self.infsec = "ens4f0np0"
+        self.hwmdl = "r760"
+      else:
+        pass
+    else:
+      pass
+
+  def getenvvars(self):
+    """Function to get all Variables per ENV"""
+    satvars = {}
+    if self.module.params['serverenv'].lower() == 'lab':
+      satvars['sat_host'] = 'satlabserver.abc.net'
+      satvars['sat_api_url'] = f"https://{satvars['sat_host']}/api/hosts"
