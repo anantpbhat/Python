@@ -42,7 +42,7 @@ class BaseCl():
         self.results = {}
 
 
-class MainProd(BaseCl):
+class MainProg(BaseCl):
   """Main program class"""
   def __init__(self):
     super().__init__()
@@ -79,3 +79,137 @@ class MainProd(BaseCl):
     if self.module.params['serverenv'].lower() == 'lab':
       satvars['sat_host'] = 'satlabserver.abc.net'
       satvars['sat_api_url'] = f"https://{satvars['sat_host']}/api/hosts"
+      satvars['sat_org_id'] = '1'
+      satvars['sat_loc_id'] = '2'
+      satvars['pxe_subnet_id'] = '1'
+      satvars['lab_subnet_id'] = '2'
+      satvars['sat_hgid'] = {
+        'rhel9_dell_r760': '2',
+        'rhel8_dell_r760': '3',
+        'rhel9_cisco_m5': '4',
+        'rhel9_cisco_m7': '4',
+        'rhel8_cisco_m5': '5',
+        'rhel8_cisco_m7': '5',
+        'rhel9_dell_r750': '6',
+        'rhel8_dell_r750': '7'
+      }
+    return satvars
+
+  def getucsmac(self):
+    """Function to query UCSM and extract primary NIC MAC"""
+    nic_adapter = "1"
+    eth_if = "1"
+    DN = f"sys/chassis-{self.chassis}/blade-{self.blade}/adaptor-{nic_adaptor}/host-eth-{eth_if}"
+    ucsm_handle = UcsHandle(self.module.params['servermgmt'], self.domusr, self.module.params['mgmtusrp'])
+    ucsm_handle.login()
+    eth_if_info = ucsm_handle.query_dn(DN)
+    if eth_if_info:
+      mac_addr = eth_if_info.mac
+    else:
+      mac_addr = None
+      self.log.append(f"UCSM connection to - {self.module.params['servermgmt']} failed!!")
+    ucsm_handle.logout()
+    inf_pri = "eno5"
+    inf_sec = "eno6"
+    return mac_addr, inf_pri, inf_sec
+
+  def getdellmac(self):
+    """Function to query Dell iDRAC and extract primy NIC MAC"""
+    Ssh = SSHConn()
+    dellcmd = f"racadm hwinventory NIC.Slot.{self.nicslt}"
+    dellp = re.compile(r'^Permanent MAC Address:')
+    sshresult = Ssh.do_ssh(self.module.params['servermgmt'], dellcmd, self.domusr, self.module.params['mgmtusrp'])
+    if "SSH failed" in sshresult:
+      mac_addr = None
+      self.log.append(f"SSH failed connecting to - {self.module.params['servermgmt']}: {sshresult}")
+    else:
+      for sshline in sshresult.splitlines():
+        if dellp.search(sshline):
+          mac_arry = sshline.split()
+          mac_addr = mac_arry[3]
+    inf_pri = self.infpri
+    inf_sec = self.infsec
+    return mac_addr, inf_pri, inf_sec
+
+  def setuphost(self, arg1, arg2, arg3, arg4):
+    """Function to setup Host entry on respective Satellite Server"""
+    OS = self.module.params['serveros'].lower()
+    HW = arg1
+    MDL = self.hwmdl
+    ether = arg2
+    if_pri = arg3
+    if_sec = arg4
+    hostvars = self.getenvvars()
+    payload = {
+      "host": {
+        "name": self.module.params['servername'].lower(),
+        "domain_id": "1",
+        "hostgroup_id": hostvars['sat_hgid'][f"{OS}_{HW}_{MDL}"],
+        "organization_id": hostvars['sat_org_id'],
+        "location_id": hostvars['sat_loc_id'],
+        "architecture_id": '1',
+        "pxe_loader": "Grub2 UEFI SecureBoot",
+        "provision_method": "build",
+        "managed": True,
+        "build": True,
+        "enabled": True,
+        "interface_attributes": [
+          {
+            "mac": ether,
+            "type": "interface",
+            "ip": "",
+            "subnet_id": hostvars['pxe_subnet_id'],
+            "domain_id": "1",
+            "identifier": if_pri,
+            "primary": True,
+            "managed": True,
+            "provision": True
+          }
+        ],
+        "host_parameters_attributes": [
+          {
+            "name": "bondslaves",
+            "value": f"{if_pri},{if_sec}"
+          },
+          {
+            "name": "ip_addr",
+            "value": self.module.params['serverip']
+          },
+          {
+            "name": "ip_gateway",
+            "value": self.module.params['servergateway']
+          },
+          {
+            "name": "ip_netmask",
+            "value": self.module.params['servernetmask']
+          },
+          {
+            "name": "vlan_id",
+            "value": self.module.params['servervlan']
+          }
+        ]
+      }
+    }
+    self.log.append(payload)
+    if not self.module.check_mode:
+      try:
+        sat_resp = requests.post(
+          hostvars['sat_api_url'],
+          auth = (self.module.params['mgmtuser'], self.module.params['mgmtusrp']),
+          headers = {"Content-Type": "application/json"},
+          data = json.dumps(payload),
+          verify = "/etc/pki/tls/certs/All-CA-bundle.pem",
+          timeout = 60
+        )
+        sat_resp.raise_for_status()
+        self.log.append(f"Host - {self.module.params['servername']} created successfully on Satellite - {hostvars['sat_host']}")
+        self.log.append(sat_resp.json())
+      except requests.exceptions.RequestException as e:
+        self.log.append(f"Error Creating Host - {e}")
+        if hasattr(e, 'response') and e.response is not None:
+          self.log.append(f"ERROR Response content: {e.response.text}")
+    else:
+      self.log.append("Check Mode Enabled - No updates performed!")
+    return
+
+
