@@ -212,4 +212,50 @@ class MainProg(BaseCl):
       self.log.append("Check Mode Enabled - No updates performed!")
     return
 
+  def poweract(self, Srv):
+    """Function to powercycle hardware to start PXE boot provisioining"""
+    if Srv == "cisco":
+      UCSDN = f"sys/chassis-{self.chassis}/blade-{self.blade}"
+      ucsm_hndl = UcsHandle(self.module.params['servermgmt'], self.domusr, self.module.params['mgmtusrp'])
+      ucsm_hndl.login()
+      pwrstate = ucsm_hndl.query_dn(UCSDN)
+      if pwrstate:
+        self.log.append(f"Blade {UCSDN} Found.")
+        pwrstate.admin_power = "cycle-immediate"
+        ucsm_hndl.set_mo(pwrstate)
+        ucsm_hndl.commit()
+        self.log.append(f"{Srv} hardware Powercycle Initiates...")
+      else:
+        self.log.append(f"{Srv} hardware Powercycle Failed, Blade {UCSDN} not found!!")
+      ucsm_hndl.logout()
+    elif Srv == "dell":
+      Ssh_pwr = SSHConn()
+      pwrdellcmd = "racadm serveraction powercycle"
+      sshresp = Ssh_pwr.do_ssh(self.module.params['servermgmt'], pwrdellcmd, self.domusr, self.module.params['mgmtusrp'])
+      if "SSH Failed" in sshresp:
+        self.log.append(f"{Srv} hardware Powercycle Failed...!!")
+      else:
+        self.log.append(f"{Srv} hardware Powercycle initiated...")
+    return
 
+  def checkerrors(self, err):
+    """Function to detect errors in accumulated log entries"""
+    found_err = list(filter(lambda x: err in x, self.log))
+    return found_err
+
+  def failfunc(self, chng=False):
+    """Function to execute on failure"""
+    self.results['msg'] = self.log
+    self.results['changed'] = chng
+    self.module.fail_json(**self.results)
+
+  def exitfunc(self, chng=True):
+    """Function to execute on graceful exit"""
+    self.results['msg'] = self.log
+    self.results['changed'] = chng
+    self.module.exit_json(**self.results)
+
+                          
+
+
+ 
