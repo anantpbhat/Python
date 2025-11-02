@@ -255,6 +255,49 @@ class MainProg(BaseCl):
     self.results['changed'] = chng
     self.module.exit_json(**self.results)
 
+  def main(self):
+    """Main Function for MainProg Class"""
+    if self.module.params['cisco']:
+      hrdw = "cisco"
+      (mac. prinic, secnic) = self.getucsmac()
+      extras = f"for Cisco Blade {self.blade} in Chassis {self.chassis}"
+    elif self.module.params['dell']:
+      hrdw = "dell"
+      (mac, prinic, secnic) = self.getdellmac()
+      extras = f"for Dell NIC Slot {self.nicslt}"
+    else:
+      (hrdw, mac, prinic, secnic, extras) = ("", "", "", "", "")
+      self.log.append("Wrong Hardware Tyoe!!")
+      self.failfunc(False)
+
+    if mac:
+      self.log.append(f"Primary NIC MAC Address {extras} is: {mac}")
+      self.setuphost(hrdw, mac, prinic, secnic)
+      host_errors = self.checkerrors("ERROR Creating Host")
+      if host_errors:
+        self.failfunc(False)
+      elif not self.module.check_mode:
+        time.sleep(3)
+        self.log.append("\n")
+        self.log.append(f"Powercycling {hrdw} hardware to start OS provisioning")
+        self.poweract(hrdw)
+        pwr_errors = self.checkerrors("Powercycle Failed")
+        if pwr_errors:
+          self.failfunc(True)
+        self.exitfunc(True)
+      else:
+        self.exitfunc(False)
+    else:
+      self.log.append(f"Not able to extract Primary NIC MAC on {hrdw} hardware!!")
+      self.failfunc(False)
+    return
+
+
+if __name__ == "__main__":
+  provsrv = MainProg()
+  provsrv.main()
+
+
                           
 
 
